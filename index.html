@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>🎈 GrammaKids - Apprends en t'amusant ! 🎈</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive;
+            background: linear-gradient(135deg, #FF6B9D 0%, #C06C84 25%, #6C5B7B 50%, #355C7D 75%, #2A9D8F 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            padding: 10px;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            border: 4px solid #FFD93D;
+        }
+
+        header h1 {
+            color: #FF6B9D;
+            font-size: clamp(1.8em, 5vw, 3em);
+            text-shadow: 2px 2px 0 #FFD93D;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: #6C5B7B;
+            font-size: clamp(1em, 3vw, 1.3em);
+            font-weight: bold;
+        }
+
+        .mascot {
+            position: fixed;
+            bottom: 15px;
+            left: 15px;
+            font-size: clamp(2.5em, 8vw, 4em);
+            animation: wave 2s ease-in-out infinite;
+            cursor: pointer;
+            z-index: 1000;
+            filter: drop-shadow(0 3px 10px rgba(0,0,0,0.3));
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-15deg); }
+            75% { transform: rotate(15deg); }
+        }
+
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 4px solid;
+            touch-action: manipulation;
+        }
+
+        .menu-card:nth-child(1) { border-color: #FF6B9D; }
+        .menu-card:nth-child(2) { border-color: #FFD93D; }
+        .menu-card:nth-child(3) { border-color: #6BCF7F; }
+        .menu-card:nth-child(4) { border-color: #4D96FF; }
+        .menu-card:nth-child(5) { border-color: #C06C84; }
+        .menu-card:nth-child(6) { border-color: #F67280; }
+        .menu-card:nth-child(7) { border-color: #A8E6CF; }
+        .menu-card:nth-child(8) { border-color: #FFB6B9; }
+        .menu-card:nth-child(9) { border-color: #C7CEEA; }
+        .menu-card:nth-child(10) { border-color: #FFDAC1; }
+
+        .menu-card:active {
+            transform: scale(0.95);
+        }
+
+        @media (hover: hover) {
+            .menu-card:hover {
+                transform: scale(1.05);
+                box-shadow: 0 12px 35px rgba(0,0,0,0.25);
+            }
+        }
+
+        .card-icon {
+            font-size: clamp(3em, 10vw, 4em);
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .menu-card h3 {
+            color: #2C3E50;
+            font-size: clamp(1.3em, 4vw, 1.8em);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .menu-card p {
+            color: #555;
+            font-size: clamp(0.95em, 3vw, 1.1em);
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .stats {
+            text-align: center;
+            font-size: clamp(0.9em, 2.5vw, 1em);
+            margin-top: 12px;
+            padding: 10px;
+            background: linear-gradient(135deg, #FFD93D, #FF6B9D);
+            border-radius: 15px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .lesson-container {
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: none;
+            border: 4px solid #FFD93D;
+        }
+
+        .lesson-container.active {
+            display: block;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #FF6B9D, #C06C84);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: clamp(1em, 3.5vw, 1.3em);
+            cursor: pointer;
+            margin-bottom: 15px;
+            font-weight: bold;
+            width: 100%;
+            touch-action: manipulation;
+        }
+
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+
+        .lesson-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 4px dashed #FFD93D;
+        }
+
+        .lesson-header h2 {
+            color: #FF6B9D;
+            font-size: clamp(1.8em, 5vw, 2.5em);
+            text-shadow: 2px 2px 0 #FFD93D;
+            margin-bottom: 10px;
+        }
+
+        .lesson-header p {
+            color: #6C5B7B;
+            font-size: clamp(1em, 3vw, 1.2em);
+            font-weight: bold;
+        }
+
+        .question-counter {
+            text-align: center;
+            font-size: clamp(1.1em, 3.5vw, 1.4em);
+            color: #6C5B7B;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9ff;
+            border-radius: 15px;
+        }
+
+        .quiz-question {
+            background: white;
+            padding: 20px 15px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            border: 3px solid #4D96FF;
+        }
+
+        .quiz-question p {
+            font-size: clamp(1.2em, 4vw, 1.5em);
+            color: #2C3E50;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            background: linear-gradient(135deg, #F0F8FF, #FFF);
+            padding: 15px;
+            border-radius: 15px;
+            border: 3px solid #E0E0E0;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: clamp(1.1em, 3.5vw, 1.3em);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            touch-action: manipulation;
+            min-height: 60px;
+        }
+
+        .option-emoji {
+            font-size: clamp(2em, 6vw, 2.5em);
+            min-width: 50px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .quiz-option:active {
+            transform: scale(0.98);
+        }
+
+        .quiz-option.correct {
+            background: linear-gradient(135deg, #6BCF7F, #4CAF50);
+            color: white;
+            border-color: #4CAF50;
+            animation: correctPulse 0.5s ease;
+        }
+
+        .quiz-option.wrong {
+            background: linear-gradient(135deg, #FF6B9D, #E91E63);
+            color: white;
+            border-color: #E91E63;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .next-btn {
+            background: linear-gradient(135deg, #6BCF7F, #4CAF50);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: clamp(1.1em, 4vw, 1.4em);
+            cursor: pointer;
+            display: none;
+            margin: 15px auto;
+            width: 100%;
+            max-width: 400px;
+            font-weight: bold;
+            touch-action: manipulation;
+        }
+
+        .next-btn:active {
+            transform: scale(0.95);
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #FF6B9D, #FFD93D, #6BCF7F);
+            color: white;
+            text-align: center;
+            font-size: clamp(1.5em, 5vw, 2.2em);
+            padding: 25px 15px;
+            border-radius: 20px;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            border: 4px solid white;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #4D96FF, #2A7DE1);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: clamp(1em, 3.5vw, 1.3em);
+            cursor: pointer;
+            margin-top: 12px;
+            font-weight: bold;
+            width: 100%;
+            max-width: 350px;
+            touch-action: manipulation;
+        }
+
+        .restart-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* إخفاء الماسكوت على الشاشات الصغيرة جداً */
+        @media (max-width: 480px) {
+            .mascot {
+                font-size: 2em;
+                bottom: 10px;
+                left: 10px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            body {
+                padding: 5px;
+            }
+
+            header {
+                padding: 12px;
+                margin-bottom: 10px;
+            }
+
+            .menu {
+                gap: 10px;
+            }
+
+            .menu-card {
+                padding: 15px;
+            }
+        }
+
+        /* تحسين للأجهزة اللوحية */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .menu {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* تحسين للشاشات الكبيرة */
+        @media (min-width: 1024px) {
+            .menu {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mascot" onclick="showEncouragement()">🦊</div>
+
+    <div class="container">
+        <header>
+            <h1>🎈 GrammaKids 🎈</h1>
+            <p>Apprends le français en t'amusant !</p>
+        </header>
+
+        <div class="menu" id="mainMenu">
+            <div class="menu-card" onclick="startLesson('noms')">
+                <div class="card-icon">📦</div>
+                <h3>Les Noms</h3>
+                <p>Questions illimitées</p>
+                <div class="stats">
+                    ✅ <span id="total-noms">0</span> correctes<br>
+                    📊 <span id="accuracy-noms">0</span>%
+                </div>
+            </div>
+
+            <div class="menu-card" onclick="startLesson('verbes')">
+                <div class="card-icon">🏃</div>
+                <h3>Les Verbes</h3>
+                <p>Questions illimitées</p>
+                <div class="stats">
+                    ✅ <span id="total-verbes">0</span> correctes<br>
+                    📊 <span id="accuracy-verbes">0</span>%
+                </div>
+            </div>
+
+            <div class="menu-card" onclick="startLesson('adjectifs')">
+                <div class="card-icon">🎨</div>
+                <h3>Les Adjectifs</h3>
+                <p>Questions illimitées</p>
+                <div class="stats">
+                    ✅ <span id="total-adjectifs">0</span> correctes<br>
+                    📊 <span id="accuracy-adjectifs">0</span>%
+                </div>
+            </div>
+
+            <div class="menu-card" onclick="startLesson('phrases')">
+                <div class="card-icon">✏️</div>
+                <h3>Les Phrases</h3>
+                <p>Questions illimitées</p>
+                <div class="stats">
+                    ✅ <span id="total-phrases">0</span> correctes<br>
+                    📊 <span id="accuracy-phrases">0</span>%
+                </div>
+            </div>
+
+            <div class="menu-card" onclick="startLesson('pronoms')">
+                <div class="card-icon">👥</div>
+                <h3>Les Pronoms</h3>
+                <p>Questions illimitées</p>
+                <div class="stats">
+                    ✅ <span id="total-pronoms">0</span> correctes<br>
+                    📊 <span id="accuracy-pronoms">0</span>%
+                </div>
+            </div>
+
+            <div class="menu-card" onclick="startLesson('temps')">
+                <div class="card-icon">⏰</div>
+                <h3>Les Temps</h3>
+                <p>Questions illimitées</p>
+                <div class="stats">
+                    ✅ <span id="total-temps">0</span> correctes<br>
+                    📊 <span id="accuracy-temps">0</span>%
+                </div>
+            </div>
+
+            <div class="menu-card" onclick="startLesson('determinants')">
+                <div class="card-icon">🔤</div>
+                <h3>Les Déterminants</h3>
+                <p>Articles et déterminants</p>
+                <div class="stats">
+                    ✅ <span id="total-determinants">0</span> correctes<br>
+                    📊 <span id="accuracy-determinants">0</span>%
+                </div>
+            </div>
+
+            <div class="menu-card" onclick="startLesson('prepositions')">
+                <div class="card-icon">➡️</div>
+                <h3>Les Prépositions</h3>
+                <p>À, de, dans, sur...</p>
+                <div class="stats">
+                    ✅ <span id="total-prepositions">0</span> correctes<br>
+                    📊 <span id="accuracy-prepositions">0</span>%
+                </div>
+            </div>
+
+            <div class="menu-card" onclick="startLesson('orthographe')">
+                <div class="card-icon">📝</div>
+                <h3>L'Orthographe</h3>
+                <p>Écriture correcte</p>
+                <div class="stats">
+                    ✅ <span id="total-orthographe">0</span> correctes<br>
+                    📊 <span id="accuracy-orthographe">0</span>%
+                </div>
+            </div>
+
+            <div class="menu-card" onclick="startLesson('conjugaison')">
+                <div class="card-icon">🔄</div>
+                <h3>La Conjugaison</h3>
+                <p>Accords des verbes</p>
+                <div class="stats">
+                    ✅ <span id="total-conjugaison">0</span> correctes<br>
+                    📊 <span id="accuracy-conjugaison">0</span>%
+                </div>
+            </div>
+        </div>
+
+        <div class="lesson-container" id="lesson-container">
+            <button class="back-btn" onclick="backToMenu()">👈 Retour au menu</button>
+            <div class="lesson-header">
+                <h2 id="lesson-title"></h2>
+                <p id="lesson-subtitle"></p>
+            </div>
+            <div class="question-counter" id="question-counter">Question 1</div>
+            <div id="quiz-area"></div>
+            <button class="next-btn" id="next-btn" onclick="nextQuestion()">Question suivante ➡️</button>
+            <div class="score-display" id="score-display" style="display:none;">
+                <p id="score-text"></p>
+                <button class="restart-btn" onclick="restartLesson()">Continuer 🔄</button>
+                <button class="restart-btn" onclick="backToMenu()">Menu Principal 🏠</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questionBanks = {
+            noms: [
+                {q: "Quel mot est un nom ?", options: ["courir", "chien", "beau"], emojis: ["❌", "🐕", "✨"], correct: 1},
+                {q: "Lequel est un nom propre ?", options: ["table", "Paris", "voiture"], emojis: ["🪑", "🗼", "🚗"], correct: 1},
+                {q: "Trouve le nom : 'Le chat mange'", options: ["Le", "chat", "mange"], emojis: ["📌", "🐱", "🍽️"], correct: 1},
+                {q: "Quel est le nom commun ?", options: ["Ahmed", "ville", "France"], emojis: ["👦", "🏙️", "🇫🇷"], correct: 1},
+                {q: "Identifie le nom propre :", options: ["enfant", "Alger", "maison"], emojis: ["👶", "🌆", "🏠"], correct: 1},
+                {q: "Quel mot désigne une chose ?", options: ["joli", "livre", "dormir"], emojis: ["✨", "📚", "😴"], correct: 1},
+                {q: "Trouve le nom : 'Marie court vite'", options: ["Marie", "court", "vite"], emojis: ["👧", "🏃", "⚡"], correct: 0},
+                {q: "Nom d'animal ?", options: ["manger", "oiseau", "grand"], emojis: ["🍽️", "🦅", "📏"], correct: 1},
+                {q: "Nom commun dans cette liste ?", options: ["Karim", "pays", "Algérie"], emojis: ["👨", "🌍", "🇩🇿"], correct: 1},
+                {q: "Le mot qui nomme une personne ?", options: ["courir", "professeur", "content"], emojis: ["🏃", "👨‍🏫", "😊"], correct: 1},
+                {q: "Nom d'objet ?", options: ["petit", "ballon", "sauter"], emojis: ["📏", "⚽", "🤸"], correct: 1},
+                {q: "Quelle ville (nom propre) ?", options: ["rue", "Lyon", "bâtiment"], emojis: ["🛣️", "🏙️", "🏢"], correct: 1},
+                {q: "Identifie le nom :", options: ["rapidement", "fleur", "manger"], emojis: ["⚡", "🌸", "🍴"], correct: 1},
+                {q: "Nom d'une idée ?", options: ["bonheur", "rouge", "danser"], emojis: ["😊", "🔴", "💃"], correct: 0},
+                {q: "Le nom dans 'Un grand arbre' ?", options: ["Un", "grand", "arbre"], emojis: ["1️⃣", "📏", "🌳"], correct: 2},
+            ],
+            verbes: [
+                {q: "Quel mot est un verbe ?", options: ["maison", "dormir", "joli"], emojis: ["🏠", "😴", "✨"], correct: 1},
+                {q: "Dans 'Marie joue', le verbe ?", options: ["Marie", "joue", "ballon"], emojis: ["👧", "⚽", "🎮"], correct: 1},
+                {q: "Verbe à l'infinitif ?", options: ["mange", "manger", "manges"], emojis: ["🍽️", "🍴", "👥"], correct: 1},
+                {q: "Trouve le verbe : 'Il court vite'", options: ["Il", "court", "vite"], emojis: ["👦", "🏃", "⚡"], correct: 1},
+                {q: "Quelle action ?", options: ["rouge", "sauter", "petit"], emojis: ["🔴", "🤸", "📏"], correct: 1},
+                {q: "Verbe dans 'Tu parles français' ?", options: ["Tu", "parles", "français"], emojis: ["👤", "🗣️", "🇫🇷"], correct: 1},
+                {q: "L'infinitif du verbe ?", options: ["écrit", "écrire", "écrivons"], emojis: ["✍️", "📝", "👥"], correct: 1},
+                {q: "Quelle est l'action ?", options: ["table", "danser", "bleu"], emojis: ["🪑", "💃", "🔵"], correct: 1},
+                {q: "Le verbe : 'Nous aimons lire'", options: ["Nous", "aimons", "lire"], emojis: ["👥", "❤️", "📖"], correct: 1},
+                {q: "Verbe d'état ?", options: ["courir", "être", "voir"], emojis: ["🏃", "🧍", "👀"], correct: 1},
+                {q: "Trouve le verbe conjugué :", options: ["chanter", "chante", "chantons"], emojis: ["🎵", "🎤", "👥"], correct: 1},
+                {q: "Action dans 'Elle dessine' ?", options: ["Elle", "dessine", "bien"], emojis: ["👧", "🎨", "👍"], correct: 1},
+                {q: "Quel verbe de mouvement ?", options: ["penser", "nager", "rêver"], emojis: ["💭", "🏊", "💤"], correct: 1},
+                {q: "Infinitif correct ?", options: ["finis", "finir", "finissons"], emojis: ["✅", "🏁", "👥"], correct: 1},
+                {q: "Le verbe : 'Vous lisez un livre'", options: ["Vous", "lisez", "livre"], emojis: ["👥", "📖", "📚"], correct: 1},
+            ],
+            adjectifs: [
+                {q: "Quel mot est un adjectif ?", options: ["courir", "arbre", "joyeux"], emojis: ["🏃", "🌳", "😊"], correct: 2},
+                {q: "Dans 'La jolie maison', l'adjectif ?", options: ["La", "jolie", "maison"], emojis: ["📌", "✨", "🏠"], correct: 1},
+                {q: "Accord correct : 'Une fille...'", options: ["fort", "forte", "forts"], emojis: ["💪", "👧", "👦👦"], correct: 1},
+                {q: "Adjectif de couleur ?", options: ["manger", "rouge", "table"], emojis: ["🍽️", "🔴", "🪑"], correct: 1},
+                {q: "Décrit la taille :", options: ["petit", "courir", "maison"], emojis: ["📏", "🏃", "🏠"], correct: 0},
+                {q: "Dans 'Un grand chien' ?", options: ["Un", "grand", "chien"], emojis: ["1️⃣", "📏", "🐕"], correct: 1},
+                {q: "Adjectif au pluriel : 'Des fleurs...'", options: ["belle", "belles", "beaux"], emojis: ["🌸", "💐", "🌺"], correct: 1},
+                {q: "Décrit l'humeur :", options: ["vite", "content", "hier"], emojis: ["⚡", "😊", "📅"], correct: 1},
+                {q: "Accord : 'Des garçons...'", options: ["gentil", "gentille", "gentils"], emojis: ["👦", "👧", "👦👦"], correct: 2},
+                {q: "L'adjectif : 'Une voiture rapide'", options: ["Une", "voiture", "rapide"], emojis: ["1️⃣", "🚗", "⚡"], correct: 2},
+                {q: "Qualité physique ?", options: ["dormir", "doux", "demain"], emojis: ["😴", "🧸", "📅"], correct: 1},
+                {q: "Dans 'Les belles fleurs' ?", options: ["Les", "belles", "fleurs"], emojis: ["📌", "✨", "🌸"], correct: 1},
+                {q: "Adjectif de forme :", options: ["rond", "courir", "maison"], emojis: ["⭕", "🏃", "🏠"], correct: 0},
+                {q: "Accord féminin : 'Une histoire...'", options: ["long", "longue", "longs"], emojis: ["📏", "📖", "📚"], correct: 1},
+                {q: "Décrit la température :", options: ["hier", "chaud", "vite"], emojis: ["📅", "🔥", "⚡"], correct: 1},
+            ],
+            phrases: [
+                {q: "Phrase correcte ?", options: ["chien le court", "Le chien court.", "court chien"], emojis: ["❌", "✅", "❌"], correct: 1},
+                {q: "Type : 'Ferme la porte.' ?", options: ["interrogative", "exclamative", "impérative"], emojis: ["❓", "❗", "👉"], correct: 2},
+                {q: "Ponctuation : 'Tu viens...'", options: ["!", "?", "."], emojis: ["❗", "❓", "⏹️"], correct: 1},
+                {q: "Phrase interrogative ?", options: ["Il part.", "Part-il ?", "Pars !"], emojis: ["⏹️", "❓", "❗"], correct: 1},
+                {q: "Début de phrase correct :", options: ["le chat", "Le chat", "LE CHAT"], emojis: ["❌", "✅", "❌"], correct: 1},
+                {q: "Phrase exclamative ?", options: ["Tu es là.", "Es-tu là ?", "Que c'est beau !"], emojis: ["⏹️", "❓", "❗"], correct: 2},
+                {q: "Ponctuation finale : 'Quelle heure est-il'", options: [".", "!", "?"], emojis: ["⏹️", "❗", "❓"], correct: 2},
+                {q: "Structure correcte ?", options: ["Mange il pain", "Il mange du pain", "pain mange il"], emojis: ["❌", "✅", "❌"], correct: 1},
+                {q: "Type de phrase : 'Viens ici !'", options: ["déclarative", "impérative", "interrogative"], emojis: ["⏹️", "👉", "❓"], correct: 1},
+                {q: "Ordre correct des mots ?", options: ["joue Marie", "Marie joue", "joue Marie joue"], emojis: ["❌", "✅", "❌"], correct: 1},
+                {q: "Phrase complète ?", options: ["Le chien.", "Le chien court.", "chien court"], emojis: ["❌", "✅", "❌"], correct: 1},
+                {q: "Négation correcte ?", options: ["Il pas dort", "Il ne dort pas", "pas il dort"], emojis: ["❌", "✅", "❌"], correct: 1},
+                {q: "Question bien formée ?", options: ["Manges tu ?", "Tu manges ?", "Manges-tu ?"], emojis: ["❌", "❓", "✅"], correct: 2},
+                {q: "Majuscule nécessaire ?", options: ["au début", "au milieu", "partout"], emojis: ["✅", "❌", "❌"], correct: 0},
+                {q: "Fin de phrase déclarative :", options: ["?", "!", "."], emojis: ["❓", "❗", "⏹️"], correct: 2},
+            ],
+            pronoms: [
+                {q: "Remplacer 'Sophie' ?", options: ["il", "elle", "ils"], emojis: ["👦", "👧", "👦👦"], correct: 1},
+                {q: "'Mes amis et moi' = ?", options: ["nous", "vous", "ils"], emojis: ["👥", "🫵", "👦👦"], correct: 0},
+                {q: "'Les filles jouent' = ?", options: ["ils jouent", "elles jouent", "nous jouons"], emojis: ["👦👦", "👧👧", "👥"], correct: 1},
+                {q: "Pronom singulier 1ère personne ?", options: ["tu", "je", "il"], emojis: ["🫵", "👤", "👦"], correct: 1},
+                {q: "Remplacer 'Le garçon' ?", options: ["elle", "il", "nous"], emojis: ["👧", "👦", "👥"], correct: 1},
+                {q: "Pronom pluriel : 'Toi et moi' ?", options: ["ils", "vous", "nous"], emojis: ["👦👦", "🫵", "👥"], correct: 2},
+                {q: "'Les enfants' au féminin ?", options: ["ils", "elles", "vous"], emojis: ["👦👦", "👧👧", "🫵"], correct: 1},
+                {q: "Pronom de politesse ?", options: ["tu", "vous", "il"], emojis: ["👤", "🫵", "👦"], correct: 1},
+                {q: "Remplacer 'Ahmed et Karim' ?", options: ["il", "elle", "ils"], emojis: ["👦", "👧", "👦👦"], correct: 2},
+                {q: "'La femme' = ?", options: ["il", "elle", "ils"], emojis: ["👦", "👩", "👦👦"], correct: 1},
+                {q: "Pronom 2ème personne singulier ?", options: ["je", "tu", "il"], emojis: ["👤", "🫵", "👦"], correct: 1},
+                {q: "'Marie et Sophie' = ?", options: ["ils", "elles", "nous"], emojis: ["👦👦", "👧👧", "👥"], correct: 1},
+                {q: "Qui parle ? (pronom)", options: ["tu", "je", "il"], emojis: ["🫵", "🗣️", "👦"], correct: 1},
+                {q: "'Le professeur' masculin ?", options: ["il", "elle", "ils"], emojis: ["👨‍🏫", "👩‍🏫", "👥"], correct: 0},
+                {q: "'Vous et moi' = ?", options: ["vous", "nous", "ils"], emojis: ["🫵", "👥", "👦👦"], correct: 1},
+            ],
+            temps: [
+                {q: "'Je mangerai' = quel temps ?", options: ["passé", "présent", "futur"], emojis: ["⏮️", "⏯️", "⏭️"], correct: 2},
+                {q: "'Hier, il a joué' = ?", options: ["passé", "présent", "futur"], emojis: ["⏮️", "⏯️", "⏭️"], correct: 0},
+                {q: "'Maintenant, tu cours' = ?", options: ["passé", "présent", "futur"], emojis: ["⏮️", "⏯️", "⏭️"], correct: 1},
+                {q: "Indicateur de futur ?", options: ["hier", "maintenant", "demain"], emojis: ["📅", "⏰", "🔮"], correct: 2},
+                {q: "'J'ai mangé' = ?", options: ["présent", "passé", "futur"], emojis: ["⏯️", "⏮️", "⏭️"], correct: 1},
+                {q: "Temps de 'Je mange' ?", options: ["passé", "présent", "futur"], emojis: ["⏮️", "⏯️", "⏭️"], correct: 1},
+                {q: "Indicateur de passé ?", options: ["bientôt", "autrefois", "aujourd'hui"], emojis: ["🔮", "📜", "⏰"], correct: 1},
+                {q: "'Nous partirons' = ?", options: ["passé", "présent", "futur"], emojis: ["⏮️", "⏯️", "⏭️"], correct: 2},
+                {q: "Temps de 'Il jouait' ?", options: ["présent", "passé", "futur"], emojis: ["⏯️", "⏮️", "⏭️"], correct: 1},
+                {q: "Mot de temps présent ?", options: ["hier", "maintenant", "demain"], emojis: ["📅", "⏰", "🔮"], correct: 1},
+                {q: "'Tu dormiras' = ?", options: ["passé", "présent", "futur"], emojis: ["⏮️", "⏯️", "⏭️"], correct: 2},
+                {q: "'Avant, je courais' = ?", options: ["présent", "passé", "futur"], emojis: ["⏯️", "⏮️", "⏭️"], correct: 1},
+                {q: "Futur simple : 'je...'", options: ["mange", "mangerai", "ai mangé"], emojis: ["⏯️", "⏭️", "⏮️"], correct: 1},
+                {q: "Indicateur futur ?", options: ["hier soir", "plus tard", "actuellement"], emojis: ["📅", "🔮", "⏰"], correct: 1},
+                {q: "'Elles dansent' = ?", options: ["passé", "présent", "futur"], emojis: ["⏮️", "⏯️", "⏭️"], correct: 1},
+            ],
+            determinants: [
+                {q: "Article défini masculin ?", options: ["un", "le", "la"], emojis: ["1️⃣", "👦", "👧"], correct: 1},
+                {q: "Article indéfini pluriel ?", options: ["les", "des", "un"], emojis: ["📌", "📦", "1️⃣"], correct: 1},
+                {q: "Complète : '... maison' (féminin)", options: ["le", "la", "les"], emojis: ["👦", "👧", "👥"], correct: 1},
+                {q: "'... enfants' (pluriel) ?", options: ["le", "la", "les"], emojis: ["👦", "👧", "👦👦"], correct: 2},
+                {q: "Article défini féminin ?", options: ["le", "la", "un"], emojis: ["👦", "👧", "1️⃣"], correct: 1},
+                {q: "'... ami' (masculin singulier) ?", options: ["un", "une", "des"], emojis: ["👦", "👧", "👥"], correct: 0},
+                {q: "Déterminant possessif : '... livre' (à moi)", options: ["ton", "mon", "son"], emojis: ["🫵", "👤", "👦"], correct: 1},
+                {q: "Pluriel de 'mon' ?", options: ["mes", "ma", "mon"], emojis: ["👥", "👧", "👦"], correct: 0},
+                {q: "'... voiture' (à toi, féminin) ?", options: ["ton", "ta", "tes"], emojis: ["👦", "👧", "👥"], correct: 1},
+                {q: "Article devant voyelle : '... arbre' ?", options: ["le", "l'", "la"], emojis: ["📌", "✂️", "👧"], correct: 1},
+                {q: "Déterminant démonstratif masculin ?", options: ["ce", "cette", "ces"], emojis: ["👦", "👧", "👥"], correct: 0},
+                {q: "'... pomme' (démonstratif féminin) ?", options: ["ce", "cette", "cet"], emojis: ["👦", "🍎", "📌"], correct: 1},
+                {q: "Déterminant interrogatif ?", options: ["le", "quel", "ce"], emojis: ["📌", "❓", "👉"], correct: 1},
+                {q: "'... livres' (quantité) ?", options: ["plusieurs", "chaque", "tout"], emojis: ["📚", "1️⃣", "💯"], correct: 0},
+                {q: "Article partitif masculin ?", options: ["du", "de la", "des"], emojis: ["👦", "👧", "👥"], correct: 0},
+            ],
+            prepositions: [
+                {q: "Je vais ... école", options: ["à l'", "de l'", "dans l'"], emojis: ["➡️", "⬅️", "📍"], correct: 0},
+                {q: "Le livre est ... table", options: ["sur", "sous", "dans"], emojis: ["⬆️", "⬇️", "📦"], correct: 0},
+                {q: "Il vient ... France", options: ["de", "à", "en"], emojis: ["⬅️", "➡️", "📍"], correct: 0},
+                {q: "J'habite ... Paris", options: ["à", "en", "au"], emojis: ["📍", "🗺️", "🌍"], correct: 0},
+                {q: "Le chat dort ... le lit", options: ["sur", "sous", "à côté de"], emojis: ["⬆️", "⬇️", "↔️"], correct: 1},
+                {q: "Je pars ... Maroc", options: ["au", "en", "à"], emojis: ["🇲🇦", "🗺️", "📍"], correct: 0},
+                {q: "... qui est ce livre ?", options: ["À", "De", "Pour"], emojis: ["❓", "📖", "👤"], correct: 0},
+                {q: "Il court ... le parc", options: ["dans", "sur", "à"], emojis: ["📍", "⬆️", "➡️"], correct: 0},
+                {q: "C'est ... toi", options: ["pour", "à", "de"], emojis: ["🎁", "➡️", "⬅️"], correct: 0},
+                {q: "Je viens ... midi", options: ["à", "de", "en"], emojis: ["⏰", "📅", "🗓️"], correct: 0},
+                {q: "Il va ... Italie", options: ["en", "au", "à"], emojis: ["🇮🇹", "🗺️", "📍"], correct: 0},
+                {q: "... hiver, il fait froid", options: ["En", "Au", "À"], emojis: ["❄️", "🗓️", "📅"], correct: 0},
+                {q: "Assis ... la chaise", options: ["sur", "dans", "à"], emojis: ["🪑", "📦", "📍"], correct: 0},
+                {q: "Je parle ... mes amis", options: ["avec", "à", "de"], emojis: ["👥", "➡️", "⬅️"], correct: 0},
+                {q: "... le soir, je lis", options: ["Le", "Au", "En"], emojis: ["🌙", "⏰", "📖"], correct: 0},
+            ],
+            orthographe: [
+                {q: "Orthographe correcte ?", options: ["pome", "pomme", "pômme"], emojis: ["❌", "🍎", "❌"], correct: 1},
+                {q: "Accent correct : 'el...ve' ?", options: ["éléve", "élève", "elève"], emojis: ["❌", "👨‍🎓", "❌"], correct: 1},
+                {q: "Pluriel de 'cheval' ?", options: ["chevals", "chevaux", "chevaus"], emojis: ["❌", "🐴", "❌"], correct: 1},
+                {q: "Féminin de 'heureux' ?", options: ["heureuse", "heureuxe", "heureuxse"], emojis: ["😊", "❌", "❌"], correct: 0},
+                {q: "Son [o] : 'b...l' ?", options: ["eaul", "eaux", "eau"], emojis: ["❌", "❌", "⚽"], correct: 2},
+                {q: "Homonyme : 'Il ... froid' ?", options: ["fait", "fais", "fai"], emojis: ["✅", "❌", "❌"], correct: 0},
+                {q: "Accent grave : 'm...re' ?", options: ["mére", "mère", "mere"], emojis: ["❌", "👩", "❌"], correct: 1},
+                {q: "Lettre muette : 'dra...' ?", options: ["p", "b", "ps"], emojis: ["🛏️", "❌", "❌"], correct: 0},
+                {q: "'C' ou 'ç' : 'gar...on' ?", options: ["c", "ç", "ss"], emojis: ["❌", "👦", "❌"], correct: 1},
+                {q: "Double consonne : 'ba...on' ?", options: ["l", "ll", "le"], emojis: ["❌", "⚽", "❌"], correct: 1},
+                {q: "Pluriel de 'œil' ?", options: ["œils", "yeux", "œux"], emojis: ["❌", "👀", "❌"], correct: 1},
+                {q: "'é' ou 'er' : 'il va mang...' ?", options: ["é", "er", "ez"], emojis: ["❌", "🍽️", "❌"], correct: 1},
+                {q: "Pluriel de 'jeu' ?", options: ["jeus", "jeues", "jeux"], emojis: ["❌", "❌", "🎮"], correct: 2},
+                {q: "Son [s] : 'poi...on' ?", options: ["s", "ss", "c"], emojis: ["❌", "🐟", "❌"], correct: 1},
+                {q: "'a' ou 'à' : 'Il ... un chat' ?", options: ["a", "à", "as"], emojis: ["✅", "❌", "❌"], correct: 0},
+            ],
+            conjugaison: [
+                {q: "'Je ...' (verbe manger, présent)", options: ["mange", "manges", "mangent"], emojis: ["🍽️", "❌", "❌"], correct: 0},
+                {q: "'Tu ...' (verbe finir, présent)", options: ["fini", "finis", "finit"], emojis: ["❌", "✅", "❌"], correct: 1},
+                {q: "'Il ...' (être, présent)", options: ["est", "ai", "es"], emojis: ["✅", "❌", "❌"], correct: 0},
+                {q: "'Nous ...' (avoir, présent)", options: ["avons", "avez", "ont"], emojis: ["✅", "❌", "❌"], correct: 0},
+                {q: "'Vous ...' (aller, présent)", options: ["allez", "allons", "vont"], emojis: ["✅", "❌", "❌"], correct: 0},
+                {q: "'Ils ...' (jouer, présent)", options: ["joue", "joues", "jouent"], emojis: ["❌", "❌", "⚽"], correct: 2},
+                {q: "'Je ...' (être, futur)", options: ["serai", "suis", "été"], emojis: ["⏭️", "❌", "❌"], correct: 0},
+                {q: "'Tu ...' (avoir, passé composé)", options: ["as eu", "a eu", "avais"], emojis: ["✅", "❌", "❌"], correct: 0},
+                {q: "'Elle ...' (venir, présent)", options: ["vien", "viens", "vient"], emojis: ["❌", "❌", "✅"], correct: 2},
+                {q: "'Nous ...' (faire, présent)", options: ["faisons", "fesons", "faisions"], emojis: ["✅", "❌", "❌"], correct: 0},
+                {q: "'Vous ...' (prendre, présent)", options: ["prenez", "prennez", "prenent"], emojis: ["✅", "❌", "❌"], correct: 0},
+                {q: "'Elles ...' (dire, présent)", options: ["dit", "dis", "disent"], emojis: ["❌", "❌", "🗣️"], correct: 2},
+                {q: "'Je ...' (aller, imparfait)", options: ["allai", "allais", "irai"], emojis: ["❌", "⏮️", "❌"], correct: 1},
+                {q: "'Tu ...' (voir, futur)", options: ["verras", "verra", "voyais"], emojis: ["👀", "❌", "❌"], correct: 0},
+                {q: "'Il ...' (pouvoir, présent)", options: ["peux", "peut", "peuvent"], emojis: ["❌", "💪", "❌"], correct: 1},
+            ]
+        };
+
+        let currentLesson = '';
+        let currentQuestionIndex = 0;
+        let currentScore = 0;
+        let totalAttempts = 0;
+        let sessionQuestions = [];
+
+        const stats = {
+            noms: {correct: 0, total: 0},
+            verbes: {correct: 0, total: 0},
+            adjectifs: {correct: 0, total: 0},
+            phrases: {correct: 0, total: 0},
+            pronoms: {correct: 0, total: 0},
+            temps: {correct: 0, total: 0},
+            determinants: {correct: 0, total: 0},
+            prepositions: {correct: 0, total: 0},
+            orthographe: {correct: 0, total: 0},
+            conjugaison: {correct: 0, total: 0}
+        };
+
+        function startLesson(lessonId) {
+            currentLesson = lessonId;
+            currentQuestionIndex = 0;
+            currentScore = 0;
+            totalAttempts = 0;
+            sessionQuestions = shuffleArray([...questionBanks[lessonId]]);
+
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('lesson-container').classList.add('active');
+
+            const titles = {
+                noms: {title: "📦 Les Noms", sub: "Questions illimitées !"},
+                verbes: {title: "🏃 Les Verbes", sub: "Questions illimitées !"},
+                adjectifs: {title: "🎨 Les Adjectifs", sub: "Questions illimitées !"},
+                phrases: {title: "✏️ Les Phrases", sub: "Questions illimitées !"},
+                pronoms: {title: "👥 Les Pronoms", sub: "Questions illimitées !"},
+                temps: {title: "⏰ Les Temps", sub: "Questions illimitées !"},
+                determinants: {title: "🔤 Les Déterminants", sub: "Articles et plus !"},
+                prepositions: {title: "➡️ Les Prépositions", sub: "Localiser dans l'espace !"},
+                orthographe: {title: "📝 L'Orthographe", sub: "Écrire correctement !"},
+                conjugaison: {title: "🔄 La Conjugaison", sub: "Conjuguer les verbes !"}
+            };
+
+            document.getElementById('lesson-title').textContent = titles[lessonId].title;
+            document.getElementById('lesson-subtitle').textContent = titles[lessonId].sub;
+            loadQuestion();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= sessionQuestions.length) {
+                sessionQuestions = shuffleArray([...questionBanks[currentLesson]]);
+                currentQuestionIndex = 0;
+            }
+
+            const question = sessionQuestions[currentQuestionIndex];
+            const quizArea = document.getElementById('quiz-area');
+            document.getElementById('question-counter').textContent = 
+                `Question ${totalAttempts + 1} • Score: ${currentScore}/${totalAttempts}`;
+
+            quizArea.innerHTML = `
+                <div class="quiz-question">
+                    <p>🎯 ${question.q}</p>
+                    <div class="quiz-options">
+                        ${question.options.map((opt, i) => `
+                            <div class="quiz-option" onclick="checkAnswer(${i}, ${question.correct})">
+                                <span class="option-emoji">${question.emojis[i]}</span>
+                                <span>${opt}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('score-display').style.display = 'none';
+        }
+
+        function checkAnswer(selected, correct) {
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach(opt => opt.style.pointerEvents = 'none');
+
+            totalAttempts++;
+            stats[currentLesson].total++;
+
+            if (selected === correct) {
+                options[selected].classList.add('correct');
+                currentScore++;
+                stats[currentLesson].correct++;
+                createConfetti();
+            } else {
+                options[selected].classList.add('wrong');
+                setTimeout(() => options[correct].classList.add('correct'), 300);
+            }
+
+            updateStats();
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        function restartLesson() {
+            currentQuestionIndex = 0;
+            sessionQuestions = shuffleArray([...questionBanks[currentLesson]]);
+            loadQuestion();
+        }
+
+        function backToMenu() {
+            document.getElementById('lesson-container').classList.remove('active');
+            document.getElementById('mainMenu').style.display = 'grid';
+            document.querySelectorAll('.quiz-option').forEach(option => {
+                option.classList.remove('correct', 'wrong');
+                option.style.pointerEvents = 'auto';
+            });
+            updateStats();
+        }
+
+        function updateStats() {
+            Object.keys(stats).forEach(lesson => {
+                const accuracy = stats[lesson].total > 0 
+                    ? Math.round((stats[lesson].correct / stats[lesson].total) * 100) 
+                    : 0;
+                const totalEl = document.getElementById(`total-${lesson}`);
+                const accuracyEl = document.getElementById(`accuracy-${lesson}`);
+                if (totalEl) totalEl.textContent = stats[lesson].correct;
+                if (accuracyEl) accuracyEl.textContent = accuracy;
+            });
+            localStorage.setItem('grammaKidsStats', JSON.stringify(stats));
+        }
+
+        function createConfetti() {
+            const colors = ['#FF6B9D', '#FFD93D', '#6BCF7F', '#4D96FF'];
+            for (let i = 0; i < 30; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.cssText = `
+                    position: fixed;
+                    width: 10px;
+                    height: 10px;
+                    background: ${colors[Math.floor(Math.random() * colors.length)]};
+                    left: ${Math.random() * 100}%;
+                    top: -20px;
+                    animation: fall 3s linear;
+                    border-radius: 50%;
+                    z-index: 9999;
+                `;
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
+
+        function showEncouragement() {
+            const messages = ['🎉 Bravo !', '⭐ Super !', '🌟 Excellent !', '💪 Continue !'];
+            alert(messages[Math.floor(Math.random() * messages.length)]);
+        }
+
+        const savedStats = localStorage.getItem('grammaKidsStats');
+        if (savedStats) {
+            Object.assign(stats, JSON.parse(savedStats));
+            updateStats();
+        }
+
+        const style = document.createElement('style');
+        style.textContent = '@keyframes fall { to { transform: translateY(100vh) rotate(360deg); opacity: 0; } }';
+        document.head.appendChild(style);
+
+        // منع التكبير المزدوج على iOS
+        document.addEventListener('touchstart', function(e) {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html>
